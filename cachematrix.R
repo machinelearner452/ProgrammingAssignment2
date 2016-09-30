@@ -1,39 +1,48 @@
-## There are two functions, makeVector and cachemean.
+## There are two functions, makeCacheMatrix and cacheSolve.
 ## The function designed to aid understand Lexical Scoping and how it works in R
 
-## This function call creates vectors based on numeric input.
-## Matric is set to NULL, using the assignment operator: <-, 
+## This function call creates matrix based on numeric input.
 ## superassignment operator: <<- to have the mean assigned at a higher level environment then the calling function
 
 
-makeVector <- function(x = numeric()) {
-        m <- NULL
-        set <- function(y) {
-                x <<- y
-                m <<- NULL
-        }
-        get <- function() x
-        setmean <- function(mean) m <<- mean
-        getmean <- function() m
-        list(set = set, get = get,
-             setmean = setmean,
-             getmean = getmean)
+makeCacheMatrix <- function(x = matrix()) {
+## Matrix is set to NULL, using the assignment operator: <-, 
+  m <- NULL
+  set <- function(y) {
+
+## superassignment operator: <<- to have the mean assigned at a higher level environment then the calling function
+    x <<- y
+    m <<- NULL
+  }
+  get <- function() x
+
+  setinverse <- function(solve) m <<- solve
+  getinverse <- function() m
+          
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
 
-## cacheman is a function that does an element by element mean calculation of the "m" matric.
+## cacheSolve is a function that does an element by element input inverse of the "x" input matrix.
 ## If the "m" matrices is not null, it used the cached store value in a higher level environment in place of have the calculation performed every time the function is called.
-##  This matric checking method comes into aid when doing machine learning applications.
+##  This matrix checking method comes into aid when doing machine learning applications.
 
 
-cachemean <- function(x, ...) {
-        m <- x$getmean()
-        if(!is.null(m)) {
-                message("getting cached data")
-                return(m)
-        }
-        data <- x$get()
-        m <- mean(data, ...)
-        x$setmean(m)
-        m
+cacheSolve <- function(x, ...) {
+  m <- x$getinverse()
+
+## if m is not Null the cached value will be used
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data <- x$get()
+        
+ ## Solve is a builtin function that does a matrix inverser
+        
+  m <- solve(data, ...)
+  x$setinverse(m)
+  m
 }
